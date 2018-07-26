@@ -1,0 +1,100 @@
+
+mode: dev
+
+management:
+  security:
+    enabled: false
+security:
+  basic:
+    enabled: false
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://172.18.113.120:1111/eureka/,http://172.18.115.186:1111/eureka/,http://172.18.115.187:1111/eureka/
+
+
+feign:
+  hystrix:
+    enabled: true
+#tomcat config
+server:
+  context-path: /
+  port: 9400
+
+spring:
+   datasource:
+      driverClassName: com.mysql.jdbc.Driver
+      #无人出租车
+      url: jdbc:mysql://172.18.113.95/xyf?useUnicode=true&characterEncoding=utf-8
+      username: root
+      password: 123456
+      type: com.alibaba.druid.pool.DruidDataSource
+      # 初始化大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 校验SQL，Oracle配置 spring.datasource.validationQuery=SELECT 1 FROM DUAL，如果不配validationQuery项，则下面三项配置无用
+      validationQuery: SELECT 'x'
+      testWhileIdle: true
+      estOnBorrow: false
+      testOnReturn: false
+   http:
+       multipart:
+         enabled: true   # 启用http上传处理
+         max-file-size: 100MB # 设置单个文件的最大长度
+         max-request-size: 100MB # 设置最大的请求文件的大小
+         file-size-threshold: 1MB  # 当上传文件达到1MB的时候进行磁盘写入
+         location: /tmp  # 上传的临时目录
+
+
+   redis:
+     database: 0
+# Redis服务器地址
+
+# Redis服务器连接端口
+     port: 6379
+# Redis服务器连接密码（默认为空）
+     password:
+# 连接池最大连接数（使用负值表示没有限制）
+     pool:
+       max-active: 8
+# 连接池最大阻塞等待时间（使用负值表示没有限制）
+       max-wait: -1
+# 连接池中的最大空闲连接
+       max-idle: 8
+# 连接池中的最小空闲连接
+       min-idle: 0
+# 连接超时时间（毫秒）
+     timeout: 0
+     cluster:
+         nodes: 172.18.115.44:6379,172.18.115.45:6379,172.18.115.46:6379
+
+
+
+
+
+mybatis:
+  config-locations: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+# 配置logback
+logging:
+  config: classpath:logback-spring.xml
+
+
+fastdfs:
+  trackerServers: 172.18.115.15:22122
+  urlPrefix: http://ope.lingyi365.com:5608/fs/
+
+
+###支付
+pay:
+  code: "65"
+

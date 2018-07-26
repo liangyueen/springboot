@@ -1,0 +1,9 @@
+
+
+#spring config
+spring:
+  profiles:
+    active: dev
+
+
+  application.name: xiyifu

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--这里采用代码配置  处理不好 会有代理的代理的问题,这样保证 事物 readonly 一定是有效的 就不改注解或者代码配置了-->
+
+    <!--事务管理-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- Enable @Transactional support -->
+    <!-- 使用annotation定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <!-- Enable @AspectJ support -->
+    <!-- 开启AOP监听 只对当前配置文件有效 -->
+    <aop:aspectj-autoproxy expose-proxy="true"/>
+
+    <!-- 使用tx/aop来配置 -->
+    <aop:config>
+        <!-- 通过aop定义事务增强切面 -->
+        <aop:pointcut id="serviceMethod" expression="execution(* com.ly.xiyifu.service.impl.*Impl.*(..))"/>
+        <!-- 引用事务增强 -->
+        <aop:advisor pointcut-ref="serviceMethod" advice-ref="txAdvice"/>
+    </aop:config>
+
+    <!--事务增强 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!-- 事务属性定义 -->
+        <tx:attributes>
+            <tx:method name="add*" read-only="false" propagation="REQUIRED" rollback-for="Exception, RuntimeException"/>
+            <tx:method name="save*" read-only="false" propagation="REQUIRED"
+                       rollback-for="Exception, RuntimeException"/>
+            <tx:method name="register" read-only="false" propagation="REQUIRED"
+                       rollback-for="Exception, RuntimeException"/>
+            <tx:method name="update*" read-only="false" propagation="REQUIRED"
+                       rollback-for="Exception, RuntimeException"/>
+            <tx:method name="insert*" read-only="false" propagation="REQUIRED"
+                       rollback-for="Exception, RuntimeException"/>
+            <tx:method name="del*" read-only="false" propagation="REQUIRED" rollback-for="Exception, RuntimeException"/>
+            <tx:method name="store*" read-only="false" propagation="REQUIRED"
+                       rollback-for="Exception, RuntimeException"/>
+            <tx:method name="remove*" read-only="false" propagation="REQUIRED"
+                       rollback-for="Exception, RuntimeException"/>
+            <tx:method name="login" read-only="false" propagation="REQUIRED"
+                       rollback-for="Exception, RuntimeException"/>
+            <tx:method name="*" read-only="true" propagation="REQUIRED" rollback-for="Exception, RuntimeException"/>
+        </tx:attributes>
+    </tx:advice>
+
+</beans>
